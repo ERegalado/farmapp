@@ -14,7 +14,7 @@ class Drugstores extends CI_Controller {
 	
 	public function index()
 	{			
-		//print_r($this->mediModel->getAll());
+		//print_r($this->drugstoreModel->getAll());
 		$data = array(			
 			'title' 		=> 'Bienvenido a MediSV', 
 			'mainView' 		=> 'home',
@@ -24,11 +24,11 @@ class Drugstores extends CI_Controller {
 		$this->load->view('template/wrapper',$data);
 	}
 	
-	public function getCoincidences($medi){			
-		echo json_encode($this->mediModel->getCoincidences(urldecode($medi)));
+	public function getCoincidences($dstore){			
+		echo json_encode($this->drugstoreModel->getCoincidences(urldecode($dstore)));
 	}
 	
 	public function get($mediId){			
-		echo json_encode($this->mediModel->get(urldecode($mediId)));
+		echo json_encode($this->drugstoreModel->get(urldecode($mediId)));
 	}
 }

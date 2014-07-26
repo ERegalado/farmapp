@@ -1,6 +1,6 @@
 <?php
 
-class MediModel extends CI_Model{
+class DrugstoreModel extends CI_Model{
 	/*--------------------------------------------------------------------------*/
 	/*  __construct ==> Call the Model constructor 								*/
 	/*																			*/
@@ -20,8 +20,8 @@ class MediModel extends CI_Model{
 	/*  get ==> gets the info of a single medicine								*/	
 	/*																			*/
 	/*--------------------------------------------------------------------------*/
-	function get($mediId){		
-		return $this->db->get_where('med_medicine',array('id_medicine' => $mediId))->row_array();		
+	function get($drugstoreId){		
+		return $this->db->get_where('drugstores',array('iddrugstore' => $drugstoreId))->row_array();		
 	}
 	
 	/*--------------------------------------------------------------------------*/
@@ -29,10 +29,18 @@ class MediModel extends CI_Model{
 	/*																			*/
 	/*--------------------------------------------------------------------------*/
 	function getCoincidences($drugstore){
-		$this->db->select('id_medicine,name,concentration,units');
-		$this->db->like('name',$medi);
+		$this->db->select('iddrugstore, name, latitude, longitude ');
+		$this->db->like('name',$drugstore);
 		$this->db->order_by('name','asc');
-		return $this->db->get('med_medicine')->result_array();		
+		return $this->db->get('drugstores')->result_array();		
+	}
+	
+	/*--------------------------------------------------------------------------*/
+	/*  getNearest => Gets the nearest drugstores								*/	
+	/*																			*/
+	/*--------------------------------------------------------------------------*/
+	function getNearest($lat,$lon){
+		return $this->db->get_where('drugstores',array('iddrugstore' => $drugstoreId))->row_array();		
 	}
 			
 	/*--------------------------------------------------------------------------*/
