@@ -34,6 +34,30 @@ class MediModel extends CI_Model{
 		$this->db->order_by('name','asc');		
 		return $this->db->get('med_medicine')->result_array();		
 	}
+	
+	/*--------------------------------------------------------------------------*/
+	/*  getCoincidences ==> gets the medicines that coincide with the criteria	*/	
+	/*																			*/
+	/*--------------------------------------------------------------------------*/
+	function getDrugstores($mediId){
+		$sql = "SELECT drugstores.iddrugstore, drugstores.name, CONCAT(address, ', ', cities.name, ', ', states.name) AS address, 
+		(SELECT AVG(IFNULL(rating,0)) FROM comments WHERE iddrugstore=drugstores.iddrugstore)
+		rating, latitude, longitude FROM drugstores INNER JOIN medDrug ON drugstores.iddrugstore = medDrug.iddrugstore INNER JOIN cities ON 
+		cities.idcity=drugstores.idcity INNER JOIN states ON states.idstate=cities.idstate WHERE medDrug.idmedicine=".$mediId;
+		$res = $this->db->query($sql)->result_array();
+		//echo $this->db->last_query();
+		return $res;		
+	}
+	
+	/*--------------------------------------------------------------------------*/
+	/*  getTop ==> gets most voted												*/	
+	/*																			*/
+	/*--------------------------------------------------------------------------*/
+	function getTop(){
+		$this->db->order_by('clicks','desc');
+		$this->db->limit(3);
+		return $this->db->get('med_medicine')->result_array();		
+	}
 			
 	/*--------------------------------------------------------------------------*/
 	/*  add ==> Inserts a new asset type with the data provided 				*/
@@ -42,7 +66,7 @@ class MediModel extends CI_Model{
 	/*																			*/
 	/*--------------------------------------------------------------------------*/
 	function add($data){
-		$this->db->insert('asset_types',$data);		
+		$this->db->insert('med_medicine',$data);		
 	}
 			
 	/*--------------------------------------------------------------------------*/
@@ -52,9 +76,9 @@ class MediModel extends CI_Model{
 	/*  $data 	- Array containing the new info of the asset					*/
 	/*																			*/
 	/*--------------------------------------------------------------------------*/
-	function update($cat,$data){
-		$this->db->where(array('asset_type' => $cat));
-		$this->db->update('asset_types',$data);
+	function update($medi,$data){
+		$this->db->where(array('idmedicine' => $medi));
+		$this->db->update('med_medicine',$data);
 	}
 	
 	/*--------------------------------------------------------------------------*/
@@ -67,5 +91,17 @@ class MediModel extends CI_Model{
 		$this->db->where(array('asset_type' => $cat));
 		$this->db->delete('asset_types');
 		return true;
+	}
+	
+	/*--------------------------------------------------------------------------*/
+	/*  update ==> Updates the info of the asset 			 					*/	
+	/*																			*/
+	/*  $asset 	- Asset's ID 													*/
+	/*  $data 	- Array containing the new info of the asset					*/
+	/*																			*/
+	/*--------------------------------------------------------------------------*/
+	function updateClicks($medi){
+		$sql ="update med_medicine set clicks = clicks+1 where idmedicine=".$medi;
+		return $this->db->query($sql);
 	}
 }

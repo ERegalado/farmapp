@@ -10,15 +10,18 @@ class Farmapp extends CI_Controller {
 		parent::__construct();		
 		$this->load->helper('js'); //load the js helper
 		$this->load->model('mediModel');
+		header('Access-Control-Allow-Origin: *');
 	}
 	
 	public function index()
 	{			
-		//print_r($this->mediModel->getAll());
+		$this->load->model('drugstoreModel');
 		$data = array(			
 			'title' 		=> 'Bienvenido a Farmapp', 
 			'mainView' 		=> 'home',
-			'scripts'		=> jUI().maps()
+			'scripts'		=> jUI().maps(),
+			'topDS'			=> $this->drugstoreModel->getTop(),
+			'topMedi'		=> $this->mediModel->getTop()
 		);		
 		
 		$this->load->view('template/wrapper',$data);
@@ -28,7 +31,22 @@ class Farmapp extends CI_Controller {
 		echo json_encode($this->mediModel->getCoincidences(urldecode($medi)));
 	}
 	
-	public function get($mediId){			
-		echo json_encode($this->mediModel->get(urldecode($mediId)));
+	public function get($mediId){
+		//Update clicks
+		$mediId = urldecode($mediId);
+		$this->mediModel->updateClicks($mediId);
+		echo json_encode($this->mediModel->get($mediId));
+	}
+	
+	public function getDrugstores($mediId){
+		echo json_encode($this->mediModel->getDrugstores(urldecode($mediId)));
+	}
+	
+	public function getTop(){
+		echo json_encode($this->mediModel->getTop());
+	}	
+	
+	public function getPrice($medi){			
+		echo json_encode($this->mediModel->get(urldecode($medi)));
 	}
 }

@@ -10,6 +10,7 @@ class Drugstores extends CI_Controller {
 		parent::__construct();		
 		$this->load->helper('js'); //load the js helper
 		$this->load->model('drugstoreModel');
+		header('Access-Control-Allow-Origin: *');
 	}
 	
 	public function index()
@@ -28,7 +29,20 @@ class Drugstores extends CI_Controller {
 		echo json_encode($this->drugstoreModel->getCoincidences(urldecode($dstore)));
 	}
 	
-	public function get($mediId){			
-		echo json_encode($this->drugstoreModel->get(urldecode($mediId)));
+	public function get($dstore){			
+		echo json_encode($this->drugstoreModel->get(urldecode($dstore)));
 	}
+	
+	public function getMedicines($dstore){			
+		echo json_encode($this->drugstoreModel->getMedicines(urldecode($dstore)));
+	}
+	
+	public function getTop(){			
+		echo json_encode($this->drugstoreModel->getTop());
+	}
+	
+	public function getNearest($lat,$lon,$mediId){			
+		echo json_encode($this->drugstoreModel->getNearest(urldecode($lat),urldecode($lon),urldecode($mediId)));
+	}
+	
 }

@@ -1,0 +1,98 @@
+/**
+ * gravityNow.css
+ *
+ * Based
+ *
+ * @package		Gravity Now
+ * @author		Rega - Supernova Team
+ * @copyright	Copyright (c) 2014, Supernova
+ * @license		http://www.apache.org/licenses/LICENSE-2.0
+ * @link		http://diputado85.sv/
+ * @since		Version 1.0
+ * @contents	
+ *				1. Base Structure
+ *				2. General Classes & Mixins
+ *				3. Variables
+ *				4. gNow Classes
+ *
+ * @filesource
+ */
+ 
+ /*
+ * 1. Base Structure
+ * The base structure is the integration between glamourize and diputado 85 look & feel. It's in the external file d85
+ *
+ */
+ @import url('fa.less');
+ 
+ /*
+* 2. General Classes & Mixins
+* 2.1. External Mixins
+*
+*/
+@import url('mixins.less');
+
+/*
+ * 3. Variables
+ * Different variables used in this file 
+ *
+ */
+@import url('vars.less');
+
+/*
+ * 4. farmapp Classes
+ * Classes specifically used in the design of D85
+ *
+ */
+ /* Header */
+#header{	
+	background-color:@sec-bg-color;
+		
+    .wrap {
+		height:85px;
+        display: table;
+        padding: 4px 0 6px 0;
+
+        > div {
+            display: table-cell;
+            vertical-align: middle;
+        }
+    }
+}
+
+#search{
+	img{width:100%;}
+	/*background-image:url('../imgs/health.jpg');*/
+	.wrap{
+		margin-top:-145px;
+		.tcenter;
+		#txtMedicine{
+			width:91%;
+			height:65px;
+			background-image:url('../imgs/btnSearch.png');
+			background-position:top right;
+			background-repeat:no-repeat;
+			padding:0 180px 0 25px;
+		}
+	}
+}
+
+#tops{
+	margin-top:120px;
+}
+
+h1.front{position:relative;z-index:10;background-color:@bg-color;}
+hr.behind{position:relative;z-index:1;margin-top:-18px;}
+ 
+ 
+ 
+ /* More Mixins */
+ .center-abs{
+	position:relative;
+ 	top:50%;
+	left:25%;	
+	width:50%;
+	margin-top:-25%;
+ }
+ 
+ .half{width:50%;}

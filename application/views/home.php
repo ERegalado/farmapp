@@ -1,6 +1,27 @@
-<input type="text" id="txtMedicine" name="txtMedicine" placeholder="Escriba el nombre del medicamento a buscar" />
+<div id="search">	
+	<img src="<?php echo base_url('res/imgs/health.jpg'); ?>" />
+	<div class="wrap">
+		<input type="text" id="txtMedicine" name="txtMedicine" placeholder="Escribe aqu&iacute; tu medicamento" />
+	</div>
+</div>
+
+<div id="tops" class="tcenter wrap">
+	<h1 class="front">Top Farmacias</h1><hr class="behind"/><br/>
+	<p class="tcenter">Aqu&iacute; encontrar&aacute;s un listado de las farmacias que han sido calificadas como las mejores por sus precios y servicio.</p>
+	
+	<hr/>
+	
+	<div class="half left">
+		<h2>Productos m&aacute;s buscados</h2>
+		<ul id="topSearch">
+			
+		</ul>
+	</div>
+	<div class="half right">
+		<h2>Denuncias Ciudadanas</h2>
+	</div>
+</div>
 <br/>
-<a id="custom-search" href="#">B&uacute;squeda Personalizada</a>
 
 <div id="medInfo" style="display:none;">
 	<h1 id="medName"></h1><hr/>
@@ -20,53 +41,6 @@
 	</p>	
 </div>
 
-<div id="mapContainer" style="width:200px; height:200px;"></div>
+<div id="mapContainer" style="width:1200px; height:600px;"></div>
 
-<script type="text/javascript">
-$(function () {
-	$('#custom-search').click(function(){
-		console.log('Here I am');		
-	});
-	
-
-
-	$('#txtMedicine').autocomplete({	
-				source: function( request, response ) {
-	                $.ajax({
-	                    url: "<?php echo base_url('farmapp/getCoincidences')."/" ?>" + escape($("#txtMedicine").val()),
-	                    dataType: "json",
-	                    success: function(data) {
-	                    			console.log ("url => "+"<?php echo base_url('farmapp/getCoincidences')."/" ?>" + escape($("#txtMedicine").val()));	                    	                    	                    
-	                                response($.map(data, function(item, index) {
-	                                return {
-	                                    label: item.name +' '+ item.concentration+item.units,
-	                                    val: item.idmedicine
-	                                    //abbrev: item.abbrev
-	                                    };
-	                            }));
-	                        }
-	                    });
-	                },
-	            minLength: 2,
-				position: { my: "left bottom", at: "left top", collision: "flip" },
-				select: function (event, ui) { console.log('selected'+ui.item.val); setMedicine(ui.item.val);  } 
-			});
-});
-
-
-function setMedicine(medi){	
-	$.ajax({
-		url: "<?php echo base_url('farmapp/get')."/" ?>" + medi,
-	    dataType: "json",
-	    success: function(data) {
-	    	//console.log('data => '+);	    	
-	    	$('#medInfo').show();
-	    	$('#medName').html(data.name);
-	    	$('#medCat').html(data.cat);
-	    	$('#medConc').html(data.concentration +" "+ data.units);
-	    	$('#medPrice').html(data.price);	    	
-	   	}
-	});	
-}
-
-</script>
+<script type="text/javascript" src="<?php echo base_url('res/scripts/farmapp/home.js'); ?>"></script>
