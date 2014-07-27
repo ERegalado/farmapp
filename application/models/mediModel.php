@@ -29,7 +29,8 @@ class MediModel extends CI_Model{
 	/*																			*/
 	/*--------------------------------------------------------------------------*/
 	function getCoincidences($medi){
-		$this->db->select('idmedicine,name,concentration,units');
+		$this->db->select('idmedicine,concentration,units');
+		$this->db->select('CONCAT(name, ", ", concentration, units) name',false);		
 		$this->db->like('name',$medi);
 		$this->db->order_by('name','asc');		
 		return $this->db->get('med_medicine')->result_array();		
@@ -41,7 +42,7 @@ class MediModel extends CI_Model{
 	/*--------------------------------------------------------------------------*/
 	function getDrugstores($mediId){
 		$sql = "SELECT drugstores.iddrugstore, drugstores.name, CONCAT(address, ', ', cities.name, ', ', states.name) AS address, 
-		(SELECT AVG(IFNULL(rating,0)) FROM comments WHERE iddrugstore=drugstores.iddrugstore)
+		IFNULL((SELECT AVG(IFNULL(rating,0)) FROM comments WHERE iddrugstore=drugstores.iddrugstore),0)
 		rating, latitude, longitude FROM drugstores INNER JOIN medDrug ON drugstores.iddrugstore = medDrug.iddrugstore INNER JOIN cities ON 
 		cities.idcity=drugstores.idcity INNER JOIN states ON states.idstate=cities.idstate WHERE medDrug.idmedicine=".$mediId;
 		$res = $this->db->query($sql)->result_array();
@@ -55,7 +56,7 @@ class MediModel extends CI_Model{
 	/*--------------------------------------------------------------------------*/
 	function getTop(){
 		$this->db->order_by('clicks','desc');
-		$this->db->limit(3);
+		$this->db->limit(6);
 		return $this->db->get('med_medicine')->result_array();		
 	}
 			

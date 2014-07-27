@@ -1,11 +1,15 @@
+var locations;
+var selMedi;
+var display;
+var isLoaded = false;
 $(function () {
+	
 	$('#txtMedicine').autocomplete({	
 			source: function( request, response ) {
 				$.ajax({
-					url: "<?php echo base_url('farmapp/getCoincidences')."/" ?>" + escape($("#txtMedicine").val()),
+					url: $("#base").val()+'farmapp/getCoincidences/' + escape($("#txtMedicine").val()),
 					dataType: "json",
 					success: function(data) {
-								console.log ("url => "+"<?php echo base_url('farmapp/getCoincidences')."/" ?>" + escape($("#txtMedicine").val()));	                    	                    	                    
 								response($.map(data, function(item, index) {
 								return {
 									label: item.name +' '+ item.concentration+item.units,
@@ -23,33 +27,64 @@ $(function () {
 	
 	//Load topVoted
 	$.ajax({
-		url: "<?php echo base_url('farmapp/getCoincidences')."/" ?>" + escape($("#txtMedicine").val()),
+		url: $("#base").val()+'farmapp/getTop/',
 		dataType: "json",
 		success: function(data) {
-					console.log ("url => "+"<?php echo base_url('farmapp/getCoincidences')."/" ?>" + escape($("#txtMedicine").val()));	                    	                    	                    
-					response($.map(data, function(item, index) {
-					return {
-						label: item.name +' '+ item.concentration+item.units,
-						val: item.idmedicine
-						//abbrev: item.abbrev
-						};
-				}));
+			var topContent = "";
+			$.each(data,function(i,item){
+				topContent+="<li onclick='setMedicine("+item.idmedicine+")'><div><span class='right'>$ "+Math.round(item.price * 100) / 100 +"</span><span>"+item.name+" "+item.concentration+" "+item.units+"<br/>"+item.cat+"</span></div></li>";
+			});
+			console.log(topContent);
+			$('#topSearch').html(topContent);
+		}
+	});
+	
+	
+	$.ajax({
+		url: $("#base").val()+'drugstores/getTop/',
+		dataType: "json",
+		success: function(data) {
+			var topContent = "";
+			var myClass = "";
+			var rating = new Array();
+			$.each(data,function(i,item){											
+				if (i == data.length-1) myClass="class='last'";
+				topContent+="<li "+myClass+"><div><img src='"+$("#base").val()+"res/imgs/drugstores/"+item.photo+"'/></div><div class='rate'><div id='raty"+i+"' style='margin-top:8px;'></div></div></li>";				
+				rating[i] = item.rating;
+			});
+//			console.log(topContent);
+			$('#topStores').html(topContent);
+			$('#raty').html(topContent);			
+			
+			for(var i=0;i<data.length;i++){
+				$('#raty'+i).raty({ score:  rating[i]});
 			}
-		});
+		}
+	});
+	
+	
 });
 
 
 function setMedicine(medi){	
+	selMedi = medi;
 	$.ajax({
-		url: "<?php echo base_url('farmapp/get')."/" ?>" + medi,
+		url: $("#base").val()+'farmapp/get/'+ medi,
 	    dataType: "json",
 	    success: function(data) {
 	    	//console.log('data => '+);	    	
-	    	$('#medInfo').show();
+			$('#iniContent').css('opacity',0);			
+			$('#medInfo').css('display','block');
 	    	$('#medName').html(data.name);
 	    	$('#medCat').html(data.cat);
+			$('#allInfo').html(data.concentration +" "+ data.units+", "+data.cat);			
 	    	$('#medConc').html(data.concentration +" "+ data.units);
-	    	$('#medPrice').html(data.price);	    	
+	    	$('#medPrice').html('$ '+Math.round(data.price * 100) / 100);			
+			console.log('selMedi => '+selMedi);
+			setTimeout(function(){
+				$('#iniContent').css('display','none');				
+				$('#medInfo').css('opacity',1);
+			},250);			
 	   	}
 	});	
 
@@ -62,6 +97,7 @@ function setMedicine(medi){
 }
 
 function showPosition(position) {
+	if (!isLoaded){
         $.ajax({
 	      url: "http://api.geonames.org/srtm3JSON?lat="+position.coords.latitude+"&lng="+position.coords.longitude+"&username=fanmixco",
 	      async: false,
@@ -75,7 +111,7 @@ function showPosition(position) {
 				
 		var infoBubbles = new nokia.maps.map.component.InfoBubbles(),
 			markersContainer = new nokia.maps.map.Container();
-		var display = new nokia.maps.map.Display(document.getElementById("mapContainer"),
+		display = new nokia.maps.map.Display(document.getElementById("mapContainer"),
 							 {
 								 "components": [
 										   infoBubbles,
@@ -83,14 +119,24 @@ function showPosition(position) {
 										   new nokia.maps.map.component.Behavior(),
 										   new nokia.maps.map.component.TypeSelector()],
 								 "zoomLevel": 12,
-								 "center": [13.7945185, -88.896530]
+								 "center": [position.coords.latitude, position.coords.longitude]
 							 });
 		
+		display.addListener("click", function (evt) {
+        if ((evt.target.$href === undefined) == false) {
+            window.location = evt.target.$href;
+        } else if ((evt.target.$click === undefined) == false) {
+            var onClickDo = new Function(evt.target.$click);
+            onClickDo();
+        }
+		});
+		
 		display.objects.add(markersContainer);
+		isLoaded = true;
 		
 		var TOUCH = nokia.maps.dom.Page.browser.touch,
 			CLICK = TOUCH ? "tap" : "click";
-		
+
 		function extend(B, A) {
 			function I() {};
 			I.prototype = A.prototype;
@@ -109,26 +155,13 @@ function showPosition(position) {
                 standardMarker = new nokia.maps.map.StandardMarker(coord, {text: "L"});
                 display.objects.add(standardMarker);
 
-                /*var g = calculateGravity(latitude, altitude);
-
-				bubbleMarker2 = new InfoBubbleMarker(
-					coord,
-					infoBubbles,
-					"gravity: "+g.toFixed(6)+"m/s&sup2;",
-					{ 
-						eventDelegationContainer: markersContainer,
-                        text: "L" ,
-						brush: { color: '#1080dd' }						
-					}
-				);*/
-						
-				// Add bubbleMarker to the markers container so it will be rendered onto the map
-//				markersContainer.objects.add(bubbleMarker);
-			
                 display.set('zoomLevel', 12);
             	display.set('center', coord);
 		}
 	});
+}
+		
+	createMarkers(position.coords.latitude,position.coords.longitude);
 }
 
 function showError(error)
@@ -148,4 +181,62 @@ function showError(error)
 		  alert("An unknown error occurred.");
 		  break;
 	}
+}
+
+function createMarkers(lat, lng) {
+	$.ajax({
+		url: $("#base").val()+"/drugstores/getNearest/" + lat + "/" + lng + "/" + selMedi,
+		type: "GET",
+		dataType: "json",
+		success: function (source) {
+			console.log(source);
+			locations = source;
+			showInfo();
+		},
+		error: function (dato) {
+			alert("ERROR");
+		}
+	});
+}
+
+function showInfo() {
+	display.objects.clear();
+
+	var red = { color: "#FF0000" };
+
+	var lat,
+		lng,
+		markerCoords;
+
+	container = new nokia.maps.map.Container();
+
+	for (var idx = 0; idx < locations.length; idx++) {
+		var standardMarker;
+
+		loc = locations[idx];
+
+		lat = parseFloat(loc.latitude);
+		lng = parseFloat(loc.longitude);
+
+		markerCoords = new nokia.maps.geo.Coordinate(lat, lng);
+
+		var messageTime = '$.Zebra_Dialog("<b>Farmacia:</b> ' + loc.name + '<br /><b>Direccion:</b> ' + loc.address + '<br /><b>Telefonos:</b> ' + loc.telephones + '<br />", {'+
+		'"type":     "FALSE",'+
+		'"title":    "'+loc.name+'",'+
+		'"buttons":  ['+
+						/*'{caption: "Ver más", callback: function() { window.location="drugResult.html?id=' + selMedi + '&lat=' + lat + '&lng=' + lng + '" }},'+*/
+						'{caption: "Cancelar", callback: function() { return; }},'+
+					']});';
+
+		if (idx == locations.length - 1) {
+			standardMarker = new nokia.maps.map.StandardMarker(markerCoords, { $click: messageTime });
+			standardMarker.set("brush", red);
+		}
+		else
+			standardMarker = new nokia.maps.map.StandardMarker(markerCoords, { $click: messageTime });
+
+		container.objects.add(standardMarker);
+
+	}
+	display.objects.add(container);
 }

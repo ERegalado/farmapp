@@ -19,7 +19,7 @@ class Farmapp extends CI_Controller {
 		$data = array(			
 			'title' 		=> 'Bienvenido a Farmapp', 
 			'mainView' 		=> 'home',
-			'scripts'		=> jUI().maps(),
+			'scripts'		=> jUI().maps().raty(),
 			'topDS'			=> $this->drugstoreModel->getTop(),
 			'topMedi'		=> $this->mediModel->getTop()
 		);		

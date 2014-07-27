@@ -10,8 +10,10 @@
 	<script type="text/javascript" src="res/scripts/jquery-migrate-1.2.1.min.js"></script>
 	<!-- Plugins & other scripts -->
 	<?php if (isset($scripts)) echo $scripts;?>
+	
 </head>
 <body>
+	<input type="hidden" id="base" value="<?php echo base_url(); ?>" />
 	<div id="wrapper">				
 		<div id="header">
 			<div class="wrap">
@@ -19,8 +21,8 @@
 					<a href="<?php echo base_url(); ?>"><img id="logo" src="<?php echo base_url('res/imgs/logo.png'); ?>"></a>
 					
 					<ul class="nav right" style="line-height:41px;">
-						<li><?php echo anchor(base_url('sue'),'Denunciar'); ?></li>
-						<li><?php echo anchor(base_url('login'),'Login'); ?></li>
+						<li><?php echo anchor('#','Denunciar'); ?></li>
+						<li><?php echo anchor('#','Login'); ?></li>
 					</ul>
 				</div>
 			</div>

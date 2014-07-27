@@ -42,7 +42,7 @@ class DrugstoreModel extends CI_Model{
 	/*																			*/
 	/*--------------------------------------------------------------------------*/
 	function getMedicines($drugstore){
-		$sql = "SELECT CONCAT(name, ', ', concentration, units) name FROM med_medicine INNER JOIN medDrug ON med_medicine.idmedicine=medDrug.idmedicine WHERE iddrugstore= ".$drugstore;
+		$sql = "SELECT med_medicine.idmedicine,CONCAT(name, ', ', concentration, units) name FROM med_medicine INNER JOIN medDrug ON med_medicine.idmedicine=medDrug.idmedicine WHERE iddrugstore= ".$drugstore;
 		return $this->db->query($sql)->result_array();		
 	}
 	
@@ -52,8 +52,8 @@ class DrugstoreModel extends CI_Model{
 	/*--------------------------------------------------------------------------*/
 	function getTop(){
 		$sql = "SELECT drugstores.iddrugstore, drugstores.name, drugstores.photo,
-		(SELECT AVG(IFNULL(rating,0)) FROM comments WHERE iddrugstore=drugstores.iddrugstore) rating
-		FROM drugstores INNER JOIN medDrug ON drugstores.iddrugstore = medDrug.iddrugstore ORDER BY rating DESC
+		IFNULL((SELECT AVG(IFNULL(rating,0)) FROM comments WHERE iddrugstore=drugstores.iddrugstore),0) rating
+		FROM drugstores ORDER BY rating DESC
 		LIMIT 3";
 		return $this->db->query($sql)->result_array();		
 	}

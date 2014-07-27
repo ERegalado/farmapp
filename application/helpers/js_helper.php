@@ -19,12 +19,21 @@ function maps(){
 	<!--script src="http://developer.here.com/apiexplorer/examples/templates/js/exampleHelpers.js"></script-->	
 	<!--link rel="stylesheet" type="text/css" href="http://developer.here.com/apiexplorer/examples/templates/js/exampleHelpers.css"/-->
 	<script src="'.base_url('res/scripts/maps/zebra_dialog.js').'"></script>	
-	
+	<link rel="stylesheet" type="text/css" href="'.base_url('res/scripts/maps/zebra_dialog.css').'"/>
 	<script type="text/javascript" src="'.base_url('res/scripts/maps/getLanguage.js').'"></script>
 	<!--script type="text/javascript" src="'.base_url('res/scripts/maps/mapData.js').'"></script-->	
 	';
 	
 	return $maps;
+}
+
+function raty(){
+	$raty = '
+	<!-- Raty -->
+	<script src="'.base_url('res/scripts/raty/jquery.raty.js').'"></script>
+	<link rel="stylesheet" type="text/css" href="'.base_url('res/scripts/raty/jquery.raty.css').'"/>';
+	
+	return $raty;
 }
 
 ?>

@@ -1,3 +1,4 @@
+
 /**
  * gravityNow.css
  *
@@ -77,13 +78,65 @@
 	}
 }
 
-#tops{
-	margin-top:120px;
-}
+#iniContent,#medInfo{margin-top:120px;.trans(all,linear,0.5s);}
 
 h1.front{position:relative;z-index:10;background-color:@bg-color;}
 hr.behind{position:relative;z-index:1;margin-top:-18px;}
+
+#medPrice{
+	background-color:#17638a;
+	display:block;
+	color:@sec-fore-color;
+	padding:10px;
+	font-size:@title;
+	height:100%;
+}
+
+ul#topSearch li{
+	div{
+		background-image:url('../imgs/top.png');
+		background-position:center left;
+		background-repeat:no-repeat;
+		padding:20px 0px 20px 40px;	
+		color:@fore-color;	
+		cursor:pointer;
+		max-width:425px;
+		border-bottom:1px solid #e5e2e2;
+		span.right{
+			 background-color:#17638a;
+			 display:block;
+			 color:@sec-fore-color;
+			 padding:10px;
+		}
+		
+	}	
+}
+
+ul#topStores li{
+	border:1px solid #e4e3e3;
+	float:left;
+	width:298px;
+	height:165px;
+	margin-right:28px;
+	position:relative;
+	.tcenter;
+	img{
+		max-width:100%;
+		max-height:100%;
+	}
+	div.rate{background-color:#17638a; height:40px; position:absolute;bottom:0;width:100%;}
+}
  
+ 
+#footer{
+	background-color:#6da9c7;
+	background-image:url('../imgs/farmapp-foot.png');
+	background-repeat:no-repeat;
+	background-position:center 35px;
+	border-bottom:10px solid #5587a0;
+	padding-top:115px;
+	color:@fore-color;
+}
  
  
  /* More Mixins */
@@ -96,3 +149,5 @@ hr.behind{position:relative;z-index:1;margin-top:-18px;}
  }
  
  .half{width:50%;}
+ 
+ .last{margin-right:0 !important;}
